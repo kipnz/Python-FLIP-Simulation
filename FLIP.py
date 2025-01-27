@@ -33,6 +33,43 @@ class FLIPSimulation:
         for particle in self.particles:
             pygame.draw.circle(screen, (0, 0, 255), particle.position.astype(int), 3)
 
+#Grid cell class
+class GridCell:
+    def __init__(self):
+        self.particles = []
+
+    def add_particle(self, particle):
+        self.particles.append(particle)
+
+    def clear(self):
+        self.particles = []
+
+#Grid class
+class Grid:
+    def __init__(self, width, height, cell_size):
+        self.width = width
+        self.height = height
+        self.cell_size = cell_size
+        self.rows = height // cell_size
+        self.cols = width // cell_size
+        self.cells = [[[] for _ in range(self.cols)] for _ in range(self.rows)]
+        self.particle_hash_array = []
+        self.particle_array = []
+
+
+    def add_particle(self, particle):
+        i, j = int(particle.position[1] // self.cell_size), int(particle.position[0] // self.cell_size)
+        self.cells[i][j].append(particle)
+
+    def update(self):
+        pass
+
+    def draw(self, screen):
+        for i in range(self.rows):
+            for j in range(self.cols):
+                x, y = j * self.cell_size, i * self.cell_size
+                pygame.draw.rect(screen, (0, 0, 0), (x, y, self.cell_size, self.cell_size), 1)
+
 # Main function
 def main():
     pygame.init()
@@ -51,10 +88,10 @@ def main():
                 running = False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                sim.add_particle(pygame.mouse.get_pos(), [0, 0])
+                sim.add_particle(pygame.mouse.get_pos(), [-100, 0])
 
             if keys[pygame.K_SPACE]:
-                sim.add_particle(pygame.mouse.get_pos(), [0, 0])
+                sim.add_particle(pygame.mouse.get_pos(), [-100, 0])
 
         sim.update()
 
